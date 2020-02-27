@@ -6,10 +6,16 @@ import (
 	"github.com/beckerino/api-white-horse/pagar"
 	"github.com/beckerino/api-white-horse/receber"
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 )
 
 func main() {
 	e := echo.New()
+
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
+	}))
 
 	p := e.Group("/pagar")
 	p.POST("", pagar.HandlerPagarCreate)
