@@ -1,9 +1,8 @@
 # api-white-horse
 
 ### Documentação simples da api: 
-```
-https://documenter.getpostman.com/view/6022999/SzKYQH2o?version=latest
-```
+[LINK]: https://documenter.getpostman.com/view/6022999/SzKYQH2o?version=latest
+
 ### Clone o repositório atráves do comando git clone : 
 ```bash
 git clone git@github.com:Beckerino/api-white-horse.git
