@@ -3,10 +3,9 @@ package pagar
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 )
 
-func pagarRead() (result []Pagar, err error) {
+func pagarRead() (result []Pagarout, err error) {
 	query := `select uuid, 
 		p.nome as tipo,
 		c.nome,
@@ -20,11 +19,11 @@ func pagarRead() (result []Pagar, err error) {
 		left join situacao as s on s.id = c.situacao;`
 	db, err := createDB()
 	if err != nil {
-		log.Fatalln(err)
+		println(err)
 	}
 	err = db.Select(&result, query)
 	if err != nil {
-		log.Fatalln(err)
+		println(err)
 	}
 
 	auditor := new(Log)
@@ -38,18 +37,18 @@ func pagarRead() (result []Pagar, err error) {
 	return result, err
 }
 
-func pagarCreate(data *Pagar) (result string, err error) {
+func pagarCreate(data *Pagarin) (result string, err error) {
 	query := `INSERT INTO public.contapagar
 		(nome, tipoconta_id, valor, valorpago, datavenc, datapagamento, situacao)
 		VALUES($1, $2, $3, $4, $5, $6, $7);
 			`
 	db, err := createDB()
 	if err != nil {
-		log.Fatalln(err)
+		println(err)
 	}
 	_, err = db.Exec(query, data.Nome, data.Tipoconta, data.Valor, data.Valorpago, data.Datavenc, data.Datapagamento, data.Situacao)
 	if err != nil {
-		log.Fatalln(err)
+		println(err)
 		return
 	}
 
@@ -64,7 +63,7 @@ func pagarCreate(data *Pagar) (result string, err error) {
 	return result, err
 }
 
-func pagarUpdate(data *Pagar) (result string, err error) {
+func pagarUpdate(data *Pagarin) (result string, err error) {
 
 	query := `UPDATE public.contapagar SET nome=$1, tipoconta_id=$2, valor=$3, valorpago=$4, datavenc=$5, datapagamento=$6, situacao=$7, uuid=$8 
 	where uuid = $8
@@ -72,11 +71,11 @@ func pagarUpdate(data *Pagar) (result string, err error) {
 			`
 	db, err := createDB()
 	if err != nil {
-		log.Fatalln(err)
+		println(err)
 	}
 	_, err = db.Exec(query, data.Nome, data.Tipoconta, data.Valor, data.Valorpago, data.Datavenc, data.Datapagamento, data.Situacao, data.ID)
 	if err != nil {
-		log.Fatalln(err)
+		println(err)
 		return
 	}
 
@@ -91,15 +90,15 @@ func pagarUpdate(data *Pagar) (result string, err error) {
 	return result, err
 }
 
-func pagarRemove(data *Pagar) (result string, err error) {
+func pagarRemove(data *Pagarin) (result string, err error) {
 	query := `DELETE FROM public.contapagar WHERE uuid = $1;`
 	db, err := createDB()
 	if err != nil {
-		log.Fatalln(err)
+		println(err)
 	}
 	_, err = db.Exec(query, data.ID)
 	if err != nil {
-		log.Fatalln(err)
+		println(err)
 		return
 	}
 	auditor := new(Log)
@@ -120,7 +119,7 @@ func auditoria(auditoria *Log, data interface{}) error {
 		`
 	db, err := createDB()
 	if err != nil {
-		log.Fatalln(err)
+		println(err)
 	}
 	Desc, err := json.Marshal(data)
 	if err != nil {
@@ -129,7 +128,7 @@ func auditoria(auditoria *Log, data interface{}) error {
 
 	_, err = db.Exec(query, auditoria.Tela, []byte(Desc))
 	if err != nil {
-		log.Fatalln(err)
+		println(err)
 	}
 	return err
 

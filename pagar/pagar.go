@@ -14,11 +14,12 @@ func createDB() (db *sqlx.DB, err error) {
 
 //HandlerPagarCreate ---
 func HandlerPagarCreate(c echo.Context) error {
-	data := new(Pagar)
+	data := new(Pagarin)
 	err := c.Bind(data)
 	if err != nil {
 		return err
 	}
+
 	result, err := pagarCreate(data)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, result)
@@ -37,7 +38,7 @@ func HandlerPagarRead(c echo.Context) error {
 
 //HandlerPagarUpdate ---
 func HandlerPagarUpdate(c echo.Context) error {
-	data := new(Pagar)
+	data := new(Pagarin)
 	err := c.Bind(data)
 	if err != nil {
 		return err
@@ -51,7 +52,7 @@ func HandlerPagarUpdate(c echo.Context) error {
 
 //HandlerPagarRemove ---
 func HandlerPagarRemove(c echo.Context) error {
-	data := new(Pagar)
+	data := new(Pagarin)
 	err := c.Bind(data)
 	if err != nil {
 		return err

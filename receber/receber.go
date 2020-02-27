@@ -14,7 +14,7 @@ func createDB() (db *sqlx.DB, err error) {
 
 //HandlerReceberCreate ---
 func HandlerReceberCreate(c echo.Context) error {
-	data := new(Receber)
+	data := new(Receberin)
 	err := c.Bind(data)
 	if err != nil {
 		return err
@@ -37,7 +37,7 @@ func HandlerReceberRead(c echo.Context) error {
 
 //HandlerReceberUpdate ---
 func HandlerReceberUpdate(c echo.Context) error {
-	data := new(Receber)
+	data := new(Receberin)
 	err := c.Bind(data)
 	if err != nil {
 		return err
@@ -51,7 +51,7 @@ func HandlerReceberUpdate(c echo.Context) error {
 
 //HandlerReceberRemove ---
 func HandlerReceberRemove(c echo.Context) error {
-	data := new(Receber)
+	data := new(Receberin)
 	err := c.Bind(data)
 	if err != nil {
 		return err

@@ -3,10 +3,9 @@ package receber
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 )
 
-func receberRead() (result []Receber, err error) {
+func receberRead() (result []Receberout, err error) {
 	query := `SELECT uuid,
 		c.nome, 
 		cpfcnpj,
@@ -20,11 +19,11 @@ func receberRead() (result []Receber, err error) {
 		left join situacao as s on s.id = c.situacao;`
 	db, err := createDB()
 	if err != nil {
-		log.Fatalln(err)
+		println(err)
 	}
 	err = db.Select(&result, query)
 	if err != nil {
-		log.Fatalln(err)
+		println(err)
 	}
 
 	auditor := new(Log)
@@ -32,13 +31,13 @@ func receberRead() (result []Receber, err error) {
 
 	err = auditoria(auditor, result)
 	if err != nil {
-		fmt.Println("error:", err)
+		Println("error:", err)
 	}
 
 	return result, err
 }
 
-func receberCreate(data *Receber) (result string, err error) {
+func receberCreate(data *Receberin) (result string, err error) {
 	query := `INSERT INTO public.contareceber
 		(nome, cpfcnpj, tipoconta_id, valor, datareceber, datarecebido, situacao)
 		VALUES($1, $2, $3, $4, $5, $6, $7);
@@ -46,11 +45,11 @@ func receberCreate(data *Receber) (result string, err error) {
 			`
 	db, err := createDB()
 	if err != nil {
-		log.Fatalln(err)
+		println(err)
 	}
 	_, err = db.Exec(query, data.Nome, data.CpfCnpj, data.Tipoconta, data.Valor, data.DataReceber, data.DataRecebido, data.Situacao)
 	if err != nil {
-		log.Fatalln(err)
+		println(err)
 		return
 	}
 
@@ -65,7 +64,7 @@ func receberCreate(data *Receber) (result string, err error) {
 	return result, err
 }
 
-func receberUpdate(data *Receber) (result string, err error) {
+func receberUpdate(data *Receberin) (result string, err error) {
 
 	query := `UPDATE public.contareceber SET nome=$1, cpfcnpj=$2, tipoconta_id=$3, valor=$4, datareceber=$5, datarecebido=$6, situacao=$7 
 	where uuid = $8
@@ -73,11 +72,11 @@ func receberUpdate(data *Receber) (result string, err error) {
 			`
 	db, err := createDB()
 	if err != nil {
-		log.Fatalln(err)
+		println(err)
 	}
 	_, err = db.Exec(query, data.Nome, data.CpfCnpj, data.Tipoconta, data.Valor, data.DataReceber, data.DataRecebido, data.Situacao, data.ID)
 	if err != nil {
-		log.Fatalln(err)
+		println(err)
 		return
 	}
 
@@ -92,15 +91,15 @@ func receberUpdate(data *Receber) (result string, err error) {
 	return result, err
 }
 
-func receberRemove(data *Receber) (result string, err error) {
+func receberRemove(data *Receberin) (result string, err error) {
 	query := `DELETE FROM public.contareceber WHERE uuid = $1;`
 	db, err := createDB()
 	if err != nil {
-		log.Fatalln(err)
+		println(err)
 	}
 	_, err = db.Exec(query, data.ID)
 	if err != nil {
-		log.Fatalln(err)
+		println(err)
 		return
 	}
 	auditor := new(Log)
@@ -121,7 +120,7 @@ func auditoria(auditoria *Log, data interface{}) error {
 		`
 	db, err := createDB()
 	if err != nil {
-		log.Fatalln(err)
+		println(err)
 	}
 	Desc, err := json.Marshal(data)
 	if err != nil {
@@ -130,7 +129,7 @@ func auditoria(auditoria *Log, data interface{}) error {
 
 	_, err = db.Exec(query, auditoria.Tela, []byte(Desc))
 	if err != nil {
-		log.Fatalln(err)
+		println(err)
 	}
 	return err
 
