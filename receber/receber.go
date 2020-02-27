@@ -1,4 +1,4 @@
-package pagar
+package receber
 
 import (
 	"net/http"
@@ -12,51 +12,51 @@ func createDB() (db *sqlx.DB, err error) {
 	return sqlx.Connect("postgres", "user=horse dbname=white password=whitehorse sslmode=disable")
 }
 
-//HandlerPagarCreate ---
-func HandlerPagarCreate(c echo.Context) error {
-	data := new(Pagar)
+//HandlerReceberCreate ---
+func HandlerReceberCreate(c echo.Context) error {
+	data := new(Receber)
 	err := c.Bind(data)
 	if err != nil {
 		return err
 	}
-	result, err := pagarCreate(data)
+	result, err := receberCreate(data)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, result)
 	}
 	return c.JSON(http.StatusOK, result)
 }
 
-//HandlerPagarRead ---
-func HandlerPagarRead(c echo.Context) error {
-	result, err := pagarRead()
+//HandlerReceberRead ---
+func HandlerReceberRead(c echo.Context) error {
+	result, err := receberRead()
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, result)
 	}
 	return c.JSON(http.StatusOK, result)
 }
 
-//HandlerPagarUpdate ---
-func HandlerPagarUpdate(c echo.Context) error {
-	data := new(Pagar)
+//HandlerReceberUpdate ---
+func HandlerReceberUpdate(c echo.Context) error {
+	data := new(Receber)
 	err := c.Bind(data)
 	if err != nil {
 		return err
 	}
-	result, err := pagarUpdate(data)
+	result, err := receberUpdate(data)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, result)
 	}
 	return c.JSON(http.StatusOK, result)
 }
 
-//HandlerPagarRemove ---
-func HandlerPagarRemove(c echo.Context) error {
-	data := new(Pagar)
+//HandlerReceberRemove ---
+func HandlerReceberRemove(c echo.Context) error {
+	data := new(Receber)
 	err := c.Bind(data)
 	if err != nil {
 		return err
 	}
-	result, err := pagarRemove(data)
+	result, err := receberRemove(data)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, result)
 	}

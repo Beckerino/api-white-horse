@@ -1,4 +1,4 @@
-package pagar
+package receber
 
 import (
 	"encoding/json"
@@ -6,17 +6,17 @@ import (
 	"log"
 )
 
-func pagarRead() (result []Pagar, err error) {
-	query := `select uuid, 
-		p.nome as tipo,
-		c.nome,
+func receberRead() (result []Receber, err error) {
+	query := `SELECT uuid,
+		c.nome, 
+		cpfcnpj,
+		t.nome as tipo, 
 		valor::money::numeric::float8,
-		valorpago::money::numeric::float8,
-		datavenc,
-		datapagamento,
+		datareceber,
+		datarecebido, 
 		s.nome as situacao
-		from public.contapagar as c
-		left join tipoconta as p on p.id = tipoconta_id
+		FROM public.contareceber as c
+		left join tipoconta as t on t.id = tipoconta_id
 		left join situacao as s on s.id = c.situacao;`
 	db, err := createDB()
 	if err != nil {
@@ -28,7 +28,7 @@ func pagarRead() (result []Pagar, err error) {
 	}
 
 	auditor := new(Log)
-	auditor.Tela = "Pagar/Read"
+	auditor.Tela = "Receber/Read"
 
 	err = auditoria(auditor, result)
 	if err != nil {
@@ -38,23 +38,24 @@ func pagarRead() (result []Pagar, err error) {
 	return result, err
 }
 
-func pagarCreate(data *Pagar) (result string, err error) {
-	query := `INSERT INTO public.contapagar
-		(nome, tipoconta_id, valor, valorpago, datavenc, datapagamento, situacao)
+func receberCreate(data *Receber) (result string, err error) {
+	query := `INSERT INTO public.contareceber
+		(nome, cpfcnpj, tipoconta_id, valor, datareceber, datarecebido, situacao)
 		VALUES($1, $2, $3, $4, $5, $6, $7);
+;
 			`
 	db, err := createDB()
 	if err != nil {
 		log.Fatalln(err)
 	}
-	_, err = db.Exec(query, data.Nome, data.Tipoconta, data.Valor, data.Valorpago, data.Datavenc, data.Datapagamento, data.Situacao)
+	_, err = db.Exec(query, data.Nome, data.CpfCnpj, data.Tipoconta, data.Valor, data.DataReceber, data.DataRecebido, data.Situacao)
 	if err != nil {
 		log.Fatalln(err)
 		return
 	}
 
 	auditor := new(Log)
-	auditor.Tela = "Pagar/Create"
+	auditor.Tela = "Receber/Create"
 
 	err = auditoria(auditor, data)
 	if err != nil {
@@ -64,9 +65,9 @@ func pagarCreate(data *Pagar) (result string, err error) {
 	return result, err
 }
 
-func pagarUpdate(data *Pagar) (result string, err error) {
+func receberUpdate(data *Receber) (result string, err error) {
 
-	query := `UPDATE public.contapagar SET nome=$1, tipoconta_id=$2, valor=$3, valorpago=$4, datavenc=$5, datapagamento=$6, situacao=$7, uuid=$8 
+	query := `UPDATE public.contareceber SET nome=$1, cpfcnpj=$2, tipoconta_id=$3, valor=$4, datareceber=$5, datarecebido=$6, situacao=$7 
 	where uuid = $8
 ;
 			`
@@ -74,14 +75,14 @@ func pagarUpdate(data *Pagar) (result string, err error) {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	_, err = db.Exec(query, data.Nome, data.Tipoconta, data.Valor, data.Valorpago, data.Datavenc, data.Datapagamento, data.Situacao, data.ID)
+	_, err = db.Exec(query, data.Nome, data.CpfCnpj, data.Tipoconta, data.Valor, data.DataReceber, data.DataRecebido, data.Situacao, data.ID)
 	if err != nil {
 		log.Fatalln(err)
 		return
 	}
 
 	auditor := new(Log)
-	auditor.Tela = "Pagar/Update"
+	auditor.Tela = "Receber/Update"
 
 	err = auditoria(auditor, data)
 	if err != nil {
@@ -91,8 +92,8 @@ func pagarUpdate(data *Pagar) (result string, err error) {
 	return result, err
 }
 
-func pagarRemove(data *Pagar) (result string, err error) {
-	query := `DELETE FROM public.contapagar WHERE uuid = $1;`
+func receberRemove(data *Receber) (result string, err error) {
+	query := `DELETE FROM public.contareceber WHERE uuid = $1;`
 	db, err := createDB()
 	if err != nil {
 		log.Fatalln(err)
@@ -103,7 +104,7 @@ func pagarRemove(data *Pagar) (result string, err error) {
 		return
 	}
 	auditor := new(Log)
-	auditor.Tela = "Pagar/Remove"
+	auditor.Tela = "Receber/Remove"
 
 	err = auditoria(auditor, data)
 	if err != nil {
