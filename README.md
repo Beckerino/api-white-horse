@@ -1,6 +1,11 @@
 # api-white-horse
 
-### A mesma pode ser executada atras do comando
+### Clone o repositório atráves do comando git clone : 
+```bash
+git clone git@github.com:Beckerino/api-white-horse.git
+```
+
+### Em seguida, pode ser executada atras do comando :
 ```bash
 go run api-white-horse.go
 ```
